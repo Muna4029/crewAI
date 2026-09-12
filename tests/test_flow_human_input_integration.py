@@ -1,5 +1,7 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
+
 from crewai.utilities.events.event_listener import event_listener
 
 
@@ -26,7 +28,9 @@ class TestFlowHumanInputIntegration:
     @patch('builtins.input', return_value='')
     def test_human_input_pauses_flow_updates(self, mock_input):
         """Test that human input pauses Flow status updates."""
-        from crewai.agents.agent_builder.base_agent_executor_mixin import CrewAgentExecutorMixin
+        from crewai.agents.agent_builder.base_agent_executor_mixin import (
+            CrewAgentExecutorMixin,
+        )
         
         executor = CrewAgentExecutorMixin()
         executor.crew = MagicMock()
@@ -55,7 +59,9 @@ class TestFlowHumanInputIntegration:
     @patch('builtins.input', side_effect=['feedback', ''])
     def test_multiple_human_input_rounds(self, mock_input):
         """Test multiple rounds of human input with Flow status management."""
-        from crewai.agents.agent_builder.base_agent_executor_mixin import CrewAgentExecutorMixin
+        from crewai.agents.agent_builder.base_agent_executor_mixin import (
+            CrewAgentExecutorMixin,
+        )
         
         executor = CrewAgentExecutorMixin()
         executor.crew = MagicMock()
@@ -111,7 +117,9 @@ class TestFlowHumanInputIntegration:
 
     def test_pause_resume_exception_handling(self):
         """Test that resume is called even if exception occurs during human input."""
-        from crewai.agents.agent_builder.base_agent_executor_mixin import CrewAgentExecutorMixin
+        from crewai.agents.agent_builder.base_agent_executor_mixin import (
+            CrewAgentExecutorMixin,
+        )
         
         executor = CrewAgentExecutorMixin()
         executor.crew = MagicMock()
@@ -137,7 +145,9 @@ class TestFlowHumanInputIntegration:
 
     def test_training_mode_human_input(self):
         """Test human input in training mode."""
-        from crewai.agents.agent_builder.base_agent_executor_mixin import CrewAgentExecutorMixin
+        from crewai.agents.agent_builder.base_agent_executor_mixin import (
+            CrewAgentExecutorMixin,
+        )
         
         executor = CrewAgentExecutorMixin()
         executor.crew = MagicMock()

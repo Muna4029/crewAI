@@ -170,7 +170,7 @@ def custom_tool():
     return CustomTool()
 
 def build_simple_crew(tool):
-    from crewai import Agent, Task, Crew
+    from crewai import Agent, Crew, Task
 
     agent1 = Agent(role="Simple role", goal="Simple goal", backstory="Simple backstory", tools=[tool])
 

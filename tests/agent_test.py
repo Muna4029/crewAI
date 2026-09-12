@@ -2099,7 +2099,12 @@ def mock_get_auth_token():
 
 @patch("crewai.cli.plus_api.PlusAPI.get_agent")
 def test_agent_from_repository(mock_get_agent, mock_get_auth_token):
-    from crewai_tools import SerperDevTool, XMLSearchTool, CSVSearchTool, EnterpriseActionTool
+    from crewai_tools import (
+        CSVSearchTool,
+        EnterpriseActionTool,
+        SerperDevTool,
+        XMLSearchTool,
+    )
 
     mock_get_response = MagicMock()
     mock_get_response.status_code = 200

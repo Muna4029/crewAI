@@ -1,6 +1,7 @@
 """Tests for reasoning in agents."""
 
 import json
+
 import pytest
 
 from crewai import Agent, Task

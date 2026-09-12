@@ -2,6 +2,8 @@ import json
 import re
 from typing import Any, Callable, Dict, List, Optional, Sequence, Union
 
+from rich.console import Console
+
 from crewai.agents.parser import (
     FINAL_ANSWER_AND_PARSABLE_ACTION_ERROR_MESSAGE,
     AgentAction,
@@ -9,6 +11,7 @@ from crewai.agents.parser import (
     CrewAgentParser,
     OutputParserException,
 )
+from crewai.cli.config import Settings
 from crewai.llm import LLM
 from crewai.llms.base_llm import BaseLLM
 from crewai.tools import BaseTool as CrewAITool
@@ -20,8 +23,6 @@ from crewai.utilities.errors import AgentRepositoryError
 from crewai.utilities.exceptions.context_window_exceeding_exception import (
     LLMContextLengthExceededException,
 )
-from rich.console import Console
-from crewai.cli.config import Settings
 
 console = Console()
 

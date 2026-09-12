@@ -6,6 +6,7 @@ import threading
 import warnings
 from collections import defaultdict
 from contextlib import contextmanager
+from datetime import datetime
 from typing import (
     Any,
     DefaultDict,
@@ -18,7 +19,7 @@ from typing import (
     Union,
     cast,
 )
-from datetime import datetime
+
 from dotenv import load_dotenv
 from litellm.types.utils import ChatCompletionDeltaToolCall
 from pydantic import BaseModel, Field
@@ -31,9 +32,9 @@ from crewai.utilities.events.llm_events import (
     LLMStreamChunkEvent,
 )
 from crewai.utilities.events.tool_usage_events import (
-    ToolUsageStartedEvent,
-    ToolUsageFinishedEvent,
     ToolUsageErrorEvent,
+    ToolUsageFinishedEvent,
+    ToolUsageStartedEvent,
 )
 
 with warnings.catch_warnings():

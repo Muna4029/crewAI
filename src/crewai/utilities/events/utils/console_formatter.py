@@ -1,11 +1,11 @@
 from typing import Any, Dict, Optional
 
 from rich.console import Console
+from rich.live import Live
 from rich.panel import Panel
+from rich.syntax import Syntax
 from rich.text import Text
 from rich.tree import Tree
-from rich.live import Live
-from rich.syntax import Syntax
 
 
 class ConsoleFormatter:
@@ -1352,9 +1352,10 @@ class ConsoleFormatter:
         if not verbose:
             return
 
-        from crewai.agents.parser import AgentAction, AgentFinish
         import json
         import re
+
+        from crewai.agents.parser import AgentAction, AgentFinish
 
         agent_role = agent_role.split("\n")[0]
 

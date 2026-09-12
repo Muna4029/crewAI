@@ -10,11 +10,10 @@ from crewai.llm import CONTEXT_WINDOW_USAGE_RATIO, LLM
 from crewai.utilities.events import (
     LLMCallCompletedEvent,
     LLMStreamChunkEvent,
-    ToolUsageStartedEvent,
-    ToolUsageFinishedEvent,
     ToolUsageErrorEvent,
+    ToolUsageFinishedEvent,
+    ToolUsageStartedEvent,
 )
-
 from crewai.utilities.token_counter_callback import TokenCalcHandler
 
 

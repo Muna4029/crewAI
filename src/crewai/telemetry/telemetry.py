@@ -5,11 +5,11 @@ import json
 import logging
 import os
 import platform
+import threading
 import warnings
 from contextlib import contextmanager
 from importlib.metadata import version
 from typing import TYPE_CHECKING, Any, Callable, Optional
-import threading
 
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import (

@@ -1,18 +1,18 @@
-import logging
 import json
+import logging
 from typing import Tuple, cast
 
 from pydantic import BaseModel, Field
 
 from crewai.agent import Agent
+from crewai.llm import LLM
 from crewai.task import Task
 from crewai.utilities import I18N
-from crewai.llm import LLM
 from crewai.utilities.events.crewai_event_bus import crewai_event_bus
 from crewai.utilities.events.reasoning_events import (
-    AgentReasoningStartedEvent,
     AgentReasoningCompletedEvent,
     AgentReasoningFailedEvent,
+    AgentReasoningStartedEvent,
 )
 
 

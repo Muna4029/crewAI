@@ -2,6 +2,7 @@ from typing import Any, Callable, Optional, Tuple, Union
 
 from pydantic import BaseModel, field_validator
 
+
 class GuardrailResult(BaseModel):
     """Result from a task guardrail execution.
 
@@ -57,8 +58,8 @@ def process_guardrail(output: Any, guardrail: Callable, retry_count: int) -> Gua
     Returns:
         GuardrailResult: The result of the guardrail validation
     """
-    from crewai.task import TaskOutput
     from crewai.lite_agent import LiteAgentOutput
+    from crewai.task import TaskOutput
 
     assert isinstance(output, TaskOutput) or isinstance(output, LiteAgentOutput), "Output must be a TaskOutput or LiteAgentOutput"
 

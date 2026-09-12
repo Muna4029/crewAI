@@ -18,8 +18,8 @@ class LLMGuardrailStartedEvent(BaseEvent):
     def __init__(self, **data):
         from inspect import getsource
 
-        from crewai.tasks.llm_guardrail import LLMGuardrail
         from crewai.tasks.hallucination_guardrail import HallucinationGuardrail
+        from crewai.tasks.llm_guardrail import LLMGuardrail
 
         super().__init__(**data)
 

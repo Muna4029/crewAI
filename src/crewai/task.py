@@ -40,7 +40,6 @@ from crewai.tasks.task_output import TaskOutput
 from crewai.tools.base_tool import BaseTool
 from crewai.utilities.config import process_config
 from crewai.utilities.constants import NOT_SPECIFIED, _NotSpecified
-from crewai.utilities.guardrail import process_guardrail, GuardrailResult
 from crewai.utilities.converter import Converter, convert_to_model
 from crewai.utilities.events import (
     TaskCompletedEvent,
@@ -48,6 +47,7 @@ from crewai.utilities.events import (
     TaskStartedEvent,
 )
 from crewai.utilities.events.crewai_event_bus import crewai_event_bus
+from crewai.utilities.guardrail import GuardrailResult, process_guardrail
 from crewai.utilities.i18n import I18N
 from crewai.utilities.printer import Printer
 from crewai.utilities.string_utils import interpolate_only

@@ -2,6 +2,7 @@ from io import StringIO
 from typing import Any, Dict
 
 from pydantic import Field, PrivateAttr
+
 from crewai.llm import LLM
 from crewai.task import Task
 from crewai.telemetry.telemetry import Telemetry
@@ -27,8 +28,8 @@ from crewai.utilities.events.utils.console_formatter import ConsoleFormatter
 from .agent_events import (
     AgentExecutionCompletedEvent,
     AgentExecutionStartedEvent,
-    AgentLogsStartedEvent,
     AgentLogsExecutionEvent,
+    AgentLogsStartedEvent,
     LiteAgentExecutionCompletedEvent,
     LiteAgentExecutionErrorEvent,
     LiteAgentExecutionStartedEvent,
@@ -53,16 +54,16 @@ from .flow_events import (
     MethodExecutionFinishedEvent,
     MethodExecutionStartedEvent,
 )
+from .reasoning_events import (
+    AgentReasoningCompletedEvent,
+    AgentReasoningFailedEvent,
+    AgentReasoningStartedEvent,
+)
 from .task_events import TaskCompletedEvent, TaskFailedEvent, TaskStartedEvent
 from .tool_usage_events import (
     ToolUsageErrorEvent,
     ToolUsageFinishedEvent,
     ToolUsageStartedEvent,
-)
-from .reasoning_events import (
-    AgentReasoningStartedEvent,
-    AgentReasoningCompletedEvent,
-    AgentReasoningFailedEvent,
 )
 
 

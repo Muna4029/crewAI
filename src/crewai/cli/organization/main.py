@@ -1,7 +1,7 @@
+from requests import HTTPError
 from rich.console import Console
 from rich.table import Table
 
-from requests import HTTPError
 from crewai.cli.command import BaseCommand, PlusAPIMixin
 from crewai.cli.config import Settings
 

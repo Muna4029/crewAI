@@ -1,4 +1,7 @@
 import json
+
+# Tests for enums
+from enum import Enum
 from typing import Dict, List, Optional
 from unittest.mock import MagicMock, Mock, patch
 
@@ -18,8 +21,6 @@ from crewai.utilities.converter import (
     validate_model,
 )
 from crewai.utilities.pydantic_schema_parser import PydanticSchemaParser
-# Tests for enums
-from enum import Enum
 
 
 @pytest.fixture(scope="module")
