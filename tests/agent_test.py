@@ -1219,7 +1219,7 @@ def test_agent_training_handler(crew_training_handler):
         verbose=True,
     )
     crew_training_handler().load.return_value = {
-        f"{str(agent.id)}": {"0": {"human_feedback": "good"}}
+        f"{agent.id!s}": {"0": {"human_feedback": "good"}}
     }
 
     result = agent._training_handler(task_prompt=task_prompt)
@@ -1510,7 +1510,7 @@ def test_agent_with_all_llm_attributes():
     assert agent.llm.temperature == 0.7
     assert agent.llm.top_p == 0.9
     assert agent.llm.n == 1
-    assert set(agent.llm.stop) == set(["STOP", "END", "\nObservation:"])
+    assert set(agent.llm.stop) == {"STOP", "END", "\nObservation:"}
     assert all(word in agent.llm.stop for word in ["STOP", "END", "\nObservation:"])
     assert agent.llm.max_tokens == 100
     assert agent.llm.presence_penalty == 0.1
@@ -1984,7 +1984,7 @@ def test_crew_agent_executor_litellm_auth_error():
         )
 
     # Verify error handling messages
-    error_message = f"Error during LLM call: {str(mock_llm_call.side_effect)}"
+    error_message = f"Error during LLM call: {mock_llm_call.side_effect!s}"
     mock_printer.assert_any_call(
         content=error_message,
         color="red",

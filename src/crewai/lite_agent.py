@@ -25,8 +25,8 @@ from pydantic import (
     Field,
     InstanceOf,
     PrivateAttr,
-    model_validator,
     field_validator,
+    model_validator,
 )
 
 from crewai.agents.agent_builder.base_agent import BaseAgent
@@ -42,7 +42,6 @@ from crewai.llm import LLM
 from crewai.tools.base_tool import BaseTool
 from crewai.tools.structured_tool import CrewStructuredTool
 from crewai.utilities import I18N
-from crewai.utilities.guardrail import process_guardrail
 from crewai.utilities.agent_utils import (
     enforce_rpm_limit,
     format_message_for_llm,
@@ -73,6 +72,7 @@ from crewai.utilities.events.llm_events import (
     LLMCallStartedEvent,
     LLMCallType,
 )
+from crewai.utilities.guardrail import process_guardrail
 from crewai.utilities.llm_utils import create_llm
 from crewai.utilities.printer import Printer
 from crewai.utilities.token_counter_callback import TokenCalcHandler
