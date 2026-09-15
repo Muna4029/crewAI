@@ -5,7 +5,6 @@ import json
 import os
 import time
 from functools import partial
-from typing import Tuple, Union
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -248,7 +247,7 @@ def test_guardrail_type_error():
             return (True, x)
 
         @staticmethod
-        def guardrail_static_fn(x: TaskOutput) -> tuple[bool, Union[str, TaskOutput]]:
+        def guardrail_static_fn(x: TaskOutput) -> tuple[bool, str | TaskOutput]:
             return (True, x)
 
     obj = Object()
@@ -271,7 +270,7 @@ def test_guardrail_type_error():
         guardrail=Object.guardrail_static_fn,
     )
 
-    def error_fn(x: TaskOutput, y: bool) -> Tuple[bool, TaskOutput]:
+    def error_fn(x: TaskOutput, y: bool) -> tuple[bool, TaskOutput]:
         return (y, x)
 
     Task(

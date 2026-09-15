@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, List
+from typing import Any
 
 from mem0 import Memory, MemoryClient
 
@@ -61,7 +61,7 @@ class Mem0Storage(Storage):
         """
         return role.replace("\n", "").replace(" ", "_").replace("/", "_")
 
-    def save(self, value: Any, metadata: Dict[str, Any]) -> None:
+    def save(self, value: Any, metadata: dict[str, Any]) -> None:
         user_id = self._get_user_id()
         agent_name = self._get_agent_name()
         params = None
@@ -100,7 +100,7 @@ class Mem0Storage(Storage):
         query: str,
         limit: int = 3,
         score_threshold: float = 0.35,
-    ) -> List[Any]:
+    ) -> list[Any]:
         params = {"query": query, "limit": limit, "output_format": "v1.1"}
         if user_id := self._get_user_id():
             params["user_id"] = user_id
@@ -139,7 +139,7 @@ class Mem0Storage(Storage):
         agents = "_".join(agents)
         return sanitize_collection_name(name=agents,max_collection_length=MAX_AGENT_ID_LENGTH_MEM0)
 
-    def _get_config(self) -> Dict[str, Any]:
+    def _get_config(self) -> dict[str, Any]:
         return self.config or getattr(self, "memory_config", {}).get("config", {}) or {}
 
     def reset(self):

@@ -1,4 +1,3 @@
-from typing import Optional
 
 from pydantic import PrivateAttr
 
@@ -14,7 +13,7 @@ class EntityMemory(Memory):
     Inherits from the Memory class.
     """
 
-    _memory_provider: Optional[str] = PrivateAttr()
+    _memory_provider: str | None = PrivateAttr()
 
     def __init__(self, crew=None, embedder_config=None, storage=None, path=None):
         if crew and hasattr(crew, "memory_config") and crew.memory_config is not None:

@@ -54,7 +54,7 @@ class CalculatorTool(BaseTool):
             result = eval(expression, {"__builtins__": {}})
             return f"The result of {expression} is {result}"
         except Exception as e:
-            return f"Error calculating {expression}: {str(e)}"
+            return f"Error calculating {expression}: {e!s}"
 
 
 # Define a custom response format using Pydantic
@@ -319,7 +319,10 @@ def test_sets_parent_flow_when_inside_flow():
 @pytest.mark.vcr(filter_headers=["authorization"])
 def test_guardrail_is_called_using_string():
     guardrail_events = defaultdict(list)
-    from crewai.utilities.events import LLMGuardrailCompletedEvent, LLMGuardrailStartedEvent
+    from crewai.utilities.events import (
+        LLMGuardrailCompletedEvent,
+        LLMGuardrailStartedEvent,
+    )
     with crewai_event_bus.scoped_handlers():
         @crewai_event_bus.on(LLMGuardrailStartedEvent)
         def capture_guardrail_started(source, event):
@@ -347,7 +350,10 @@ def test_guardrail_is_called_using_string():
 @pytest.mark.vcr(filter_headers=["authorization"])
 def test_guardrail_is_called_using_callable():
     guardrail_events = defaultdict(list)
-    from crewai.utilities.events import LLMGuardrailCompletedEvent, LLMGuardrailStartedEvent
+    from crewai.utilities.events import (
+        LLMGuardrailCompletedEvent,
+        LLMGuardrailStartedEvent,
+    )
     with crewai_event_bus.scoped_handlers():
         @crewai_event_bus.on(LLMGuardrailStartedEvent)
         def capture_guardrail_started(source, event):
@@ -374,7 +380,10 @@ def test_guardrail_is_called_using_callable():
 @pytest.mark.vcr(filter_headers=["authorization"])
 def test_guardrail_reached_attempt_limit():
     guardrail_events = defaultdict(list)
-    from crewai.utilities.events import LLMGuardrailCompletedEvent, LLMGuardrailStartedEvent
+    from crewai.utilities.events import (
+        LLMGuardrailCompletedEvent,
+        LLMGuardrailStartedEvent,
+    )
     with crewai_event_bus.scoped_handlers():
         @crewai_event_bus.on(LLMGuardrailStartedEvent)
         def capture_guardrail_started(source, event):

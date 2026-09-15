@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 from pydantic import Field
 
@@ -38,7 +37,7 @@ class BaseAgentTool(BaseTool):
         # Remove quotes and convert to lowercase
         return normalized.replace('"', "").casefold()
 
-    def _get_coworker(self, coworker: Optional[str], **kwargs) -> Optional[str]:
+    def _get_coworker(self, coworker: str | None, **kwargs) -> str | None:
         coworker = coworker or kwargs.get("co_worker") or kwargs.get("coworker")
         if coworker:
             is_list = coworker.startswith("[") and coworker.endswith("]")
@@ -48,9 +47,9 @@ class BaseAgentTool(BaseTool):
 
     def _execute(
         self,
-        agent_name: Optional[str],
+        agent_name: str | None,
         task: str,
-        context: Optional[str] = None
+        context: str | None = None
     ) -> str:
         """
         Execute delegation to an agent with case-insensitive and whitespace-tolerant matching.

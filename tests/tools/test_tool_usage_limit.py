@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 
 from crewai.tools import BaseTool, tool
 from crewai.tools.tool_usage import ToolUsage

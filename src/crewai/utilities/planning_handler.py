@@ -1,5 +1,5 @@
 import logging
-from typing import Any, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -20,7 +20,7 @@ class PlanPerTask(BaseModel):
 
 class PlannerTaskPydanticOutput(BaseModel):
     """Output format for task planning results."""
-    list_of_plans_per_task: List[PlanPerTask] = Field(
+    list_of_plans_per_task: list[PlanPerTask] = Field(
         ...,
         description="Step by step plan on how the agents can execute their tasks using the available tools with mastery",
     )
@@ -28,7 +28,7 @@ class PlannerTaskPydanticOutput(BaseModel):
 
 class CrewPlanner:
     """Plans and coordinates the execution of crew tasks."""
-    def __init__(self, tasks: List[Task], planning_agent_llm: Optional[Any] = None):
+    def __init__(self, tasks: list[Task], planning_agent_llm: Any | None = None):
         self.tasks = tasks
 
         if planning_agent_llm is None:
@@ -74,7 +74,7 @@ class CrewPlanner:
             output_pydantic=PlannerTaskPydanticOutput,
         )
 
-    def _get_agent_knowledge(self, task: Task) -> List[str]:
+    def _get_agent_knowledge(self, task: Task) -> list[str]:
         """
         Safely retrieve knowledge source content from the task's agent.
 

@@ -1,4 +1,3 @@
-from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -23,7 +22,7 @@ class DelegateWorkTool(BaseAgentTool):
         self,
         task: str,
         context: str,
-        coworker: Optional[str] = None,
+        coworker: str | None = None,
         **kwargs,
     ) -> str:
         coworker = self._get_coworker(coworker, **kwargs)

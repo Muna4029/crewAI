@@ -1,7 +1,7 @@
 """Base class for flow state persistence."""
 
 import abc
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -22,14 +22,13 @@ class FlowPersistence(abc.ABC):
         - Establishing connections
         - Setting up indexes
         """
-        pass
     
     @abc.abstractmethod
     def save_state(
         self,
         flow_uuid: str,
         method_name: str,
-        state_data: Union[Dict[str, Any], BaseModel]
+        state_data: dict[str, Any] | BaseModel
     ) -> None:
         """Persist the flow state after method completion.
         
@@ -38,10 +37,9 @@ class FlowPersistence(abc.ABC):
             method_name: Name of the method that just completed
             state_data: Current state data (either dict or Pydantic model)
         """
-        pass
     
     @abc.abstractmethod
-    def load_state(self, flow_uuid: str) -> Optional[Dict[str, Any]]:
+    def load_state(self, flow_uuid: str) -> dict[str, Any] | None:
         """Load the most recent state for a given flow UUID.
         
         Args:
@@ -50,4 +48,3 @@ class FlowPersistence(abc.ABC):
         Returns:
             The most recent state as a dictionary, or None if no state exists
         """
-        pass

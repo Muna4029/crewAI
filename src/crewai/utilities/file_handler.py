@@ -2,7 +2,6 @@ import json
 import os
 import pickle
 from datetime import datetime
-from typing import Union
 
 
 class FileHandler:
@@ -12,10 +11,10 @@ class FileHandler:
         file_path (Union[bool, str]): Path to the log file or boolean flag
     """
 
-    def __init__(self, file_path: Union[bool, str]):
+    def __init__(self, file_path: bool | str):
         self._initialize_path(file_path)
         
-    def _initialize_path(self, file_path: Union[bool, str]):
+    def _initialize_path(self, file_path: bool | str):
         if file_path is True:  # File path is boolean True
             self._path = os.path.join(os.curdir, "logs.txt")
         
@@ -57,7 +56,7 @@ class FileHandler:
                     file.write(message)
 
         except Exception as e:
-            raise ValueError(f"Failed to log message: {str(e)}")
+            raise ValueError(f"Failed to log message: {e!s}")
         
 class PickleHandler:
     def __init__(self, file_name: str) -> None:

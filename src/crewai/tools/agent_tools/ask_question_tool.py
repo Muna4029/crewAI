@@ -1,4 +1,3 @@
-from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -21,7 +20,7 @@ class AskQuestionTool(BaseAgentTool):
         self,
         question: str,
         context: str,
-        coworker: Optional[str] = None,
+        coworker: str | None = None,
         **kwargs,
     ) -> str:
         coworker = self._get_coworker(coworker, **kwargs)

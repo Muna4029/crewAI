@@ -1,7 +1,7 @@
+from requests import HTTPError
 from rich.console import Console
 from rich.table import Table
 
-from requests import HTTPError
 from crewai.cli.command import BaseCommand, PlusAPIMixin
 from crewai.cli.config import Settings
 
@@ -33,10 +33,10 @@ class OrganizationCommand(BaseCommand, PlusAPIMixin):
             if e.response.status_code == 401:
                 console.print("You are not logged in to any organization. Use 'crewai login' to login.", style="bold red")
                 return
-            console.print(f"Failed to retrieve organization list: {str(e)}", style="bold red")
+            console.print(f"Failed to retrieve organization list: {e!s}", style="bold red")
             raise SystemExit(1)
         except Exception as e:
-            console.print(f"Failed to retrieve organization list: {str(e)}", style="bold red")
+            console.print(f"Failed to retrieve organization list: {e!s}", style="bold red")
             raise SystemExit(1)
 
     def switch(self, org_id):
@@ -60,10 +60,10 @@ class OrganizationCommand(BaseCommand, PlusAPIMixin):
             if e.response.status_code == 401:
                 console.print("You are not logged in to any organization. Use 'crewai login' to login.", style="bold red")
                 return
-            console.print(f"Failed to retrieve organization list: {str(e)}", style="bold red")
+            console.print(f"Failed to retrieve organization list: {e!s}", style="bold red")
             raise SystemExit(1)
         except Exception as e:
-            console.print(f"Failed to switch organization: {str(e)}", style="bold red")
+            console.print(f"Failed to switch organization: {e!s}", style="bold red")
             raise SystemExit(1)
 
     def current(self):

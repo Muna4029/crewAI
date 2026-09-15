@@ -1,5 +1,5 @@
 import subprocess
-from functools import lru_cache
+from functools import cache
 
 
 class Repository:
@@ -36,7 +36,7 @@ class Repository:
             encoding="utf-8",
         ).strip()
 
-    @lru_cache(maxsize=None)
+    @cache
     def is_git_repo(self) -> bool:
         """Check if the current directory is a git repository."""
         try:
