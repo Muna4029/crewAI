@@ -5,7 +5,6 @@ import pytest
 
 from crewai import Agent, Crew, Task
 from crewai.telemetry import Telemetry
-
 from opentelemetry import trace
 
 
