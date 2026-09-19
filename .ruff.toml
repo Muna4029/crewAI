@@ -2,3 +2,6 @@ exclude = [
     "templates",
     "__init__.py",
 ]
+
+[lint]
+per-file-ignores = {"__init__.py" = ["F401"]}
