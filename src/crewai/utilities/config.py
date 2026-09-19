@@ -16,6 +16,13 @@ def process_config(
     Returns:
         Dict[str, Any]: The updated values dictionary.
     """
+    # Defensive check: if values is not a dict, return it as-is to avoid
+    # AttributeError when calling .get() on non-dict types.
+    # This can happen when Pydantic tries to coerce invalid context values
+    # (e.g., strings in a list) into Task objects.
+    if not isinstance(values, dict):
+        return values
+
     config = values.get("config", {})
     if not config:
         return values
