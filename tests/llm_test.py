@@ -376,6 +376,7 @@ def get_weather_tool_schema():
         },
     }
 
+
 def test_context_window_exceeded_error_handling():
     """Test that litellm.ContextWindowExceededError is converted to LLMContextLengthExceededException."""
     from litellm.exceptions import ContextWindowExceededError
@@ -391,7 +392,7 @@ def test_context_window_exceeded_error_handling():
         mock_completion.side_effect = ContextWindowExceededError(
             "This model's maximum context length is 8192 tokens. However, your messages resulted in 10000 tokens.",
             model="gpt-4",
-            llm_provider="openai"
+            llm_provider="openai",
         )
 
         with pytest.raises(LLMContextLengthExceededException) as excinfo:
@@ -406,7 +407,7 @@ def test_context_window_exceeded_error_handling():
         mock_completion.side_effect = ContextWindowExceededError(
             "This model's maximum context length is 8192 tokens. However, your messages resulted in 10000 tokens.",
             model="gpt-4",
-            llm_provider="openai"
+            llm_provider="openai",
         )
 
         with pytest.raises(LLMContextLengthExceededException) as excinfo:
@@ -597,20 +598,19 @@ def test_handle_streaming_tool_calls(get_weather_tool_schema, mock_emit):
         expected_final_chunk_result=expected_final_chunk_result,
     )
 
+
 @pytest.mark.vcr(filter_headers=["authorization"])
 def test_handle_streaming_tool_calls_with_error(get_weather_tool_schema, mock_emit):
     def get_weather_error(location):
         raise Exception("Error")
-        
+
     llm = LLM(model="openai/gpt-4o", stream=True)
     response = llm.call(
         messages=[
             {"role": "user", "content": "What is the weather in New York?"},
         ],
         tools=[get_weather_tool_schema],
-        available_functions={
-            "get_weather": get_weather_error
-        },
+        available_functions={"get_weather": get_weather_error},
     )
     assert response == ""
     expected_final_chunk_result = '{"location":"New York, NY"}'
@@ -619,7 +619,7 @@ def test_handle_streaming_tool_calls_with_error(get_weather_tool_schema, mock_em
         expected_stream_chunk=9,
         expected_completed_llm_call=1,
         expected_tool_usage_started=1,
-        expected_tool_usage_error=1,    
+        expected_tool_usage_error=1,
         expected_final_chunk_result=expected_final_chunk_result,
     )
 

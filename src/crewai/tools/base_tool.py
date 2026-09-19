@@ -14,11 +14,13 @@ from pydantic import BaseModel as PydanticBaseModel
 
 from crewai.tools.structured_tool import CrewStructuredTool
 
+
 class EnvVar(BaseModel):
     name: str
     description: str
     required: bool = True
     default: Optional[str] = None
+
 
 class BaseTool(BaseModel, ABC):
     class _ArgsSchemaPlaceholder(PydanticBaseModel):
@@ -276,7 +278,9 @@ def to_langchain(
     return [t.to_structured_tool() if isinstance(t, BaseTool) else t for t in tools]
 
 
-def tool(*args, result_as_answer: bool = False, max_usage_count: int | None = None) -> Callable:
+def tool(
+    *args, result_as_answer: bool = False, max_usage_count: int | None = None
+) -> Callable:
     """
     Decorator to create a tool from a function.
 

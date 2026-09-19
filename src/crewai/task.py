@@ -201,7 +201,6 @@ class Task(BaseModel):
             # Check return annotation if present, but don't require it
             return_annotation = sig.return_annotation
             if return_annotation != inspect.Signature.empty:
-
                 return_annotation_args = get_args(return_annotation)
                 if not (
                     get_origin(return_annotation) is tuple
@@ -434,7 +433,7 @@ class Task(BaseModel):
                 guardrail_result = process_guardrail(
                     output=task_output,
                     guardrail=self._guardrail,
-                    retry_count=self.retry_count
+                    retry_count=self.retry_count,
                 )
                 if not guardrail_result.success:
                     if self.retry_count >= self.max_retries:

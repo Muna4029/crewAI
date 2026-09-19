@@ -398,6 +398,7 @@ def test_output_json_hierarchical():
     assert result.json == '{"score": 4}'
     assert result.to_dict() == {"score": 4}
 
+
 @pytest.mark.vcr(filter_headers=["authorization"])
 def test_inject_date():
     reporter = Agent(
@@ -421,6 +422,7 @@ def test_inject_date():
     )
     result = crew.kickoff()
     assert "2025-05-21" in result.raw
+
 
 @pytest.mark.vcr(filter_headers=["authorization"])
 def test_inject_date_custom_format():
@@ -446,6 +448,7 @@ def test_inject_date_custom_format():
     )
     result = crew.kickoff()
     assert "May 21, 2025" in result.raw
+
 
 @pytest.mark.vcr(filter_headers=["authorization"])
 def test_no_inject_date():
@@ -587,9 +590,9 @@ def test_output_pydantic_to_another_task():
     crew = Crew(agents=[scorer], tasks=[task1, task2], verbose=True)
     result = crew.kickoff()
     pydantic_result = result.pydantic
-    assert isinstance(
-        pydantic_result, ScoreOutput
-    ), "Expected pydantic result to be of type ScoreOutput"
+    assert isinstance(pydantic_result, ScoreOutput), (
+        "Expected pydantic result to be of type ScoreOutput"
+    )
     assert pydantic_result.score == 5
 
 
@@ -1061,9 +1064,9 @@ def test_key():
     assert task.key == hash, "The key should be the hash of the description."
 
     task.interpolate_inputs_and_add_conversation_history(inputs={"topic": "AI"})
-    assert (
-        task.key == hash
-    ), "The key should be the hash of the non-interpolated description."
+    assert task.key == hash, (
+        "The key should be the hash of the non-interpolated description."
+    )
 
 
 def test_output_file_validation():

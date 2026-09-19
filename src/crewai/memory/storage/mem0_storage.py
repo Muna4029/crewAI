@@ -123,7 +123,7 @@ class Mem0Storage(Storage):
         # automatically when the crew is created.
         if isinstance(self.memory, Memory):
             del params["metadata"], params["output_format"]
-            
+
         results = self.memory.search(**params)
         return [r for r in results["results"] if r["score"] >= score_threshold]
 
@@ -137,7 +137,9 @@ class Mem0Storage(Storage):
         agents = self.crew.agents
         agents = [self._sanitize_role(agent.role) for agent in agents]
         agents = "_".join(agents)
-        return sanitize_collection_name(name=agents,max_collection_length=MAX_AGENT_ID_LENGTH_MEM0)
+        return sanitize_collection_name(
+            name=agents, max_collection_length=MAX_AGENT_ID_LENGTH_MEM0
+        )
 
     def _get_config(self) -> Dict[str, Any]:
         return self.config or getattr(self, "memory_config", {}).get("config", {}) or {}

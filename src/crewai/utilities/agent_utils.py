@@ -25,6 +25,7 @@ from crewai.cli.config import Settings
 
 console = Console()
 
+
 def parse_tools(tools: List[BaseTool]) -> List[CrewStructuredTool]:
     """Parse tools to be used for the task."""
     tools_list = []
@@ -89,7 +90,7 @@ def handle_max_iterations_exceeded(
 
     if formatted_answer and hasattr(formatted_answer, "text"):
         assistant_message = (
-            formatted_answer.text + f'\n{i18n.errors("force_final_answer")}'
+            formatted_answer.text + f"\n{i18n.errors('force_final_answer')}"
         )
     else:
         assistant_message = i18n.errors("force_final_answer")
@@ -151,9 +152,9 @@ def get_llm_response(
     llms_to_try = [llm]
     if fallback_llms:
         llms_to_try.extend(fallback_llms)
-    
+
     last_exception = None
-    
+
     for i, current_llm in enumerate(llms_to_try):
         try:
             answer = current_llm.call(
@@ -164,7 +165,9 @@ def get_llm_response(
                 error_msg = "Received None or empty response from LLM call."
                 printer.print(content=error_msg, color="red")
                 if i < len(llms_to_try) - 1:
-                    printer.print(content=f"Trying fallback LLM {i+1}...", color="yellow")
+                    printer.print(
+                        content=f"Trying fallback LLM {i + 1}...", color="yellow"
+                    )
                     continue
                 else:
                     raise ValueError("Invalid response from LLM call - None or empty.")
@@ -175,17 +178,28 @@ def get_llm_response(
                 printer.print(content=f"Primary LLM failed: {e}", color="red")
             else:
                 printer.print(content=f"Fallback LLM {i} failed: {e}", color="red")
-            
+
             if e.__class__.__module__.startswith("litellm"):
                 error_str = str(e).lower()
-                if any(term in error_str for term in ["authentication", "api key", "unauthorized", "forbidden"]):
-                    printer.print(content="Authentication error detected, skipping remaining fallbacks", color="red")
+                if any(
+                    term in error_str
+                    for term in [
+                        "authentication",
+                        "api key",
+                        "unauthorized",
+                        "forbidden",
+                    ]
+                ):
+                    printer.print(
+                        content="Authentication error detected, skipping remaining fallbacks",
+                        color="red",
+                    )
                     raise e
-            
+
             if i < len(llms_to_try) - 1:
-                printer.print(content=f"Trying fallback LLM {i+1}...", color="yellow")
+                printer.print(content=f"Trying fallback LLM {i + 1}...", color="yellow")
                 continue
-    
+
     printer.print(content="All LLMs failed, raising last exception", color="red")
     raise last_exception
 
@@ -463,9 +477,16 @@ def show_agent_logs(
 def _print_current_organization():
     settings = Settings()
     if settings.org_uuid:
-        console.print(f"Fetching agent from organization: {settings.org_name} ({settings.org_uuid})", style="bold blue")
+        console.print(
+            f"Fetching agent from organization: {settings.org_name} ({settings.org_uuid})",
+            style="bold blue",
+        )
     else:
-        console.print("No organization currently set. We recommend setting one before using: `crewai org switch <org_id>` command.", style="yellow")
+        console.print(
+            "No organization currently set. We recommend setting one before using: `crewai org switch <org_id>` command.",
+            style="yellow",
+        )
+
 
 def load_agent_from_repository(from_repository: str) -> Dict[str, Any]:
     attributes: Dict[str, Any] = {}

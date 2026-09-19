@@ -79,7 +79,8 @@ class FilteredStream(io.TextIOBase):
                 "give feedback / get help" in lower_s
                 or "litellm.info:" in lower_s
                 or "litellm" in lower_s
-                or "Consider using a smaller input or implementing a text splitting strategy" in lower_s
+                or "Consider using a smaller input or implementing a text splitting strategy"
+                in lower_s
             ):
                 return 0
 
@@ -878,7 +879,7 @@ class LLM(BaseLLM):
                     event=ToolUsageErrorEvent(
                         tool_name=function_name,
                         tool_args=function_args,
-                        error=f"Tool execution error: {str(e)}"
+                        error=f"Tool execution error: {str(e)}",
                     ),
                 )
         return None

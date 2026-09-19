@@ -45,7 +45,7 @@ class DeployCommand(BaseCommand, PlusAPIMixin):
         console.print("\nTo check the status of the deployment, run:")
         console.print("crewai deploy status")
         console.print(" or")
-        console.print(f"crewai deploy status --uuid \"{json_response['uuid']}\"")
+        console.print(f'crewai deploy status --uuid "{json_response["uuid"]}"')
 
     def _display_logs(self, log_messages: List[Dict[str, Any]]) -> None:
         """

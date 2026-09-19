@@ -615,12 +615,12 @@ def test_crew_with_delegating_agents_should_not_override_task_tools(ceo, writer)
         _, kwargs = mock_execute_sync.call_args
         tools = kwargs["tools"]
 
-        assert any(
-            isinstance(tool, TestTool) for tool in tools
-        ), "TestTool should be present"
-        assert any(
-            "delegate" in tool.name.lower() for tool in tools
-        ), "Delegation tool should be present"
+        assert any(isinstance(tool, TestTool) for tool in tools), (
+            "TestTool should be present"
+        )
+        assert any("delegate" in tool.name.lower() for tool in tools), (
+            "Delegation tool should be present"
+        )
 
 
 @pytest.mark.vcr(filter_headers=["authorization"])
@@ -679,12 +679,12 @@ def test_crew_with_delegating_agents_should_not_override_agent_tools(ceo, writer
         _, kwargs = mock_execute_sync.call_args
         tools = kwargs["tools"]
 
-        assert any(
-            isinstance(tool, TestTool) for tool in new_ceo.tools
-        ), "TestTool should be present"
-        assert any(
-            "delegate" in tool.name.lower() for tool in tools
-        ), "Delegation tool should be present"
+        assert any(isinstance(tool, TestTool) for tool in new_ceo.tools), (
+            "TestTool should be present"
+        )
+        assert any("delegate" in tool.name.lower() for tool in tools), (
+            "Delegation tool should be present"
+        )
 
 
 @pytest.mark.vcr(filter_headers=["authorization"])
@@ -808,17 +808,17 @@ def test_task_tools_override_agent_tools_with_allow_delegation(researcher, write
         used_tools = kwargs["tools"]
 
         # Confirm AnotherTestTool is present but TestTool is not
-        assert any(
-            isinstance(tool, AnotherTestTool) for tool in used_tools
-        ), "AnotherTestTool should be present"
-        assert not any(
-            isinstance(tool, TestTool) for tool in used_tools
-        ), "TestTool should not be present among used tools"
+        assert any(isinstance(tool, AnotherTestTool) for tool in used_tools), (
+            "AnotherTestTool should be present"
+        )
+        assert not any(isinstance(tool, TestTool) for tool in used_tools), (
+            "TestTool should not be present among used tools"
+        )
 
         # Confirm delegation tool(s) are present
-        assert any(
-            "delegate" in tool.name.lower() for tool in used_tools
-        ), "Delegation tool should be present"
+        assert any("delegate" in tool.name.lower() for tool in used_tools), (
+            "Delegation tool should be present"
+        )
 
     # Finally, make sure the agent's original tools remain unchanged
     assert len(researcher_with_delegation.tools) == 1
@@ -869,9 +869,9 @@ def test_crew_verbose_output(researcher, writer, capsys):
     ]
 
     for expected_string in expected_strings:
-        assert (
-            expected_string in filtered_output
-        ), f"Expected '{expected_string}' in output, but it was not found."
+        assert expected_string in filtered_output, (
+            f"Expected '{expected_string}' in output, but it was not found."
+        )
 
     # Now test with verbose set to False
     crew.verbose = False
@@ -1675,9 +1675,9 @@ def test_code_execution_flag_adds_code_tool_upon_kickoff():
 
         # Verify that exactly one tool was used and it was a CodeInterpreterTool
         assert len(used_tools) == 1, "Should have exactly one tool"
-        assert isinstance(
-            used_tools[0], CodeInterpreterTool
-        ), "Tool should be CodeInterpreterTool"
+        assert isinstance(used_tools[0], CodeInterpreterTool), (
+            "Tool should be CodeInterpreterTool"
+        )
 
 
 @pytest.mark.vcr(filter_headers=["authorization"])
@@ -3759,9 +3759,9 @@ def test_fetch_inputs():
     expected_placeholders = {"role_detail", "topic", "field"}
     actual_placeholders = crew.fetch_inputs()
 
-    assert (
-        actual_placeholders == expected_placeholders
-    ), f"Expected {expected_placeholders}, but got {actual_placeholders}"
+    assert actual_placeholders == expected_placeholders, (
+        f"Expected {expected_placeholders}, but got {actual_placeholders}"
+    )
 
 
 def test_task_tools_preserve_code_execution_tools():
@@ -3834,20 +3834,20 @@ def test_task_tools_preserve_code_execution_tools():
         used_tools = kwargs["tools"]
 
         # Verify all expected tools are present
-        assert any(
-            isinstance(tool, TestTool) for tool in used_tools
-        ), "Task's TestTool should be present"
-        assert any(
-            isinstance(tool, CodeInterpreterTool) for tool in used_tools
-        ), "CodeInterpreterTool should be present"
-        assert any(
-            "delegate" in tool.name.lower() for tool in used_tools
-        ), "Delegation tool should be present"
+        assert any(isinstance(tool, TestTool) for tool in used_tools), (
+            "Task's TestTool should be present"
+        )
+        assert any(isinstance(tool, CodeInterpreterTool) for tool in used_tools), (
+            "CodeInterpreterTool should be present"
+        )
+        assert any("delegate" in tool.name.lower() for tool in used_tools), (
+            "Delegation tool should be present"
+        )
 
         # Verify the total number of tools (TestTool + CodeInterpreter + 2 delegation tools)
-        assert (
-            len(used_tools) == 4
-        ), "Should have TestTool, CodeInterpreter, and 2 delegation tools"
+        assert len(used_tools) == 4, (
+            "Should have TestTool, CodeInterpreter, and 2 delegation tools"
+        )
 
 
 @pytest.mark.vcr(filter_headers=["authorization"])
@@ -3891,9 +3891,9 @@ def test_multimodal_flag_adds_multimodal_tools():
         used_tools = kwargs["tools"]
 
         # Check that the multimodal tool was added
-        assert any(
-            isinstance(tool, AddImageTool) for tool in used_tools
-        ), "AddImageTool should be present when agent is multimodal"
+        assert any(isinstance(tool, AddImageTool) for tool in used_tools), (
+            "AddImageTool should be present when agent is multimodal"
+        )
 
         # Verify we have exactly one tool (just the AddImageTool)
         assert len(used_tools) == 1, "Should only have the AddImageTool"
@@ -4157,9 +4157,9 @@ def test_crew_guardrail_feedback_in_context():
     assert len(execution_contexts) > 1, "Task should have been executed multiple times"
 
     # Verify that the second execution included the guardrail feedback
-    assert (
-        "Output must contain the keyword 'IMPORTANT'" in execution_contexts[1]
-    ), "Guardrail feedback should be included in retry context"
+    assert "Output must contain the keyword 'IMPORTANT'" in execution_contexts[1], (
+        "Guardrail feedback should be included in retry context"
+    )
 
     # Verify final output meets guardrail requirements
     assert "IMPORTANT" in result.raw, "Final output should contain required keyword"
@@ -4376,46 +4376,46 @@ def test_crew_copy_with_memory():
     try:
         crew_copy = crew.copy()
 
-        assert hasattr(
-            crew_copy, "_short_term_memory"
-        ), "Copied crew should have _short_term_memory"
-        assert (
-            crew_copy._short_term_memory is not None
-        ), "Copied _short_term_memory should not be None"
-        assert (
-            id(crew_copy._short_term_memory) != original_short_term_id
-        ), "Copied _short_term_memory should be a new object"
+        assert hasattr(crew_copy, "_short_term_memory"), (
+            "Copied crew should have _short_term_memory"
+        )
+        assert crew_copy._short_term_memory is not None, (
+            "Copied _short_term_memory should not be None"
+        )
+        assert id(crew_copy._short_term_memory) != original_short_term_id, (
+            "Copied _short_term_memory should be a new object"
+        )
 
-        assert hasattr(
-            crew_copy, "_long_term_memory"
-        ), "Copied crew should have _long_term_memory"
-        assert (
-            crew_copy._long_term_memory is not None
-        ), "Copied _long_term_memory should not be None"
-        assert (
-            id(crew_copy._long_term_memory) != original_long_term_id
-        ), "Copied _long_term_memory should be a new object"
+        assert hasattr(crew_copy, "_long_term_memory"), (
+            "Copied crew should have _long_term_memory"
+        )
+        assert crew_copy._long_term_memory is not None, (
+            "Copied _long_term_memory should not be None"
+        )
+        assert id(crew_copy._long_term_memory) != original_long_term_id, (
+            "Copied _long_term_memory should be a new object"
+        )
 
-        assert hasattr(
-            crew_copy, "_entity_memory"
-        ), "Copied crew should have _entity_memory"
-        assert (
-            crew_copy._entity_memory is not None
-        ), "Copied _entity_memory should not be None"
-        assert (
-            id(crew_copy._entity_memory) != original_entity_id
-        ), "Copied _entity_memory should be a new object"
+        assert hasattr(crew_copy, "_entity_memory"), (
+            "Copied crew should have _entity_memory"
+        )
+        assert crew_copy._entity_memory is not None, (
+            "Copied _entity_memory should not be None"
+        )
+        assert id(crew_copy._entity_memory) != original_entity_id, (
+            "Copied _entity_memory should be a new object"
+        )
 
         if original_external_id:
-            assert hasattr(
-                crew_copy, "_external_memory"
-            ), "Copied crew should have _external_memory"
-            assert (
-                crew_copy._external_memory is not None
-            ), "Copied _external_memory should not be None"
-            assert (
-                id(crew_copy._external_memory) != original_external_id
-            ), "Copied _external_memory should be a new object"
+            assert hasattr(crew_copy, "_external_memory"), (
+                "Copied crew should have _external_memory"
+            )
+            assert crew_copy._external_memory is not None, (
+                "Copied _external_memory should not be None"
+            )
+            assert id(crew_copy._external_memory) != original_external_id, (
+                "Copied _external_memory should be a new object"
+            )
         else:
             assert (
                 not hasattr(crew_copy, "_external_memory")
@@ -4423,15 +4423,15 @@ def test_crew_copy_with_memory():
             ), "Copied _external_memory should be None if not originally present"
 
         if original_user_id:
-            assert hasattr(
-                crew_copy, "_user_memory"
-            ), "Copied crew should have _user_memory"
-            assert (
-                crew_copy._user_memory is not None
-            ), "Copied _user_memory should not be None"
-            assert (
-                id(crew_copy._user_memory) != original_user_id
-            ), "Copied _user_memory should be a new object"
+            assert hasattr(crew_copy, "_user_memory"), (
+                "Copied crew should have _user_memory"
+            )
+            assert crew_copy._user_memory is not None, (
+                "Copied _user_memory should not be None"
+            )
+            assert id(crew_copy._user_memory) != original_user_id, (
+                "Copied _user_memory should be a new object"
+            )
         else:
             assert (
                 not hasattr(crew_copy, "_user_memory") or crew_copy._user_memory is None

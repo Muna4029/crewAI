@@ -127,7 +127,7 @@ class CrewAgentExecutorMixin:
     def _ask_human_input(self, final_answer: str) -> str:
         """Prompt human input with mode-appropriate messaging."""
         event_listener.formatter.pause_live_updates()
-        
+
         try:
             self._printer.print(
                 content=f"\033[1m\033[95m ## Final Result:\033[00m \033[92m{final_answer}\033[00m"
@@ -157,7 +157,9 @@ class CrewAgentExecutorMixin:
             self._printer.print(content=prompt, color="bold_yellow")
             response = input()
             if response.strip() != "":
-                self._printer.print(content="\nProcessing your feedback...", color="cyan")
+                self._printer.print(
+                    content="\nProcessing your feedback...", color="cyan"
+                )
             return response
         finally:
             event_listener.formatter.resume_live_updates()

@@ -108,7 +108,6 @@ class PlusAPI:
 
     def create_crew(self, payload) -> requests.Response:
         return self._make_request("POST", self.CREWS_RESOURCE, json=payload)
-    
+
     def get_organizations(self) -> requests.Response:
         return self._make_request("GET", self.ORGANIZATIONS_RESOURCE)
-    

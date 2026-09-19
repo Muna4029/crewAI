@@ -558,9 +558,9 @@ def test_agent_repeated_tool_usage(capsys):
     expected_message = (
         "I tried reusing the same input, I must stop using this action input."
     )
-    assert (
-        expected_message in output
-    ), f"Expected message not found in output. Output was: {output}"
+    assert expected_message in output, (
+        f"Expected message not found in output. Output was: {output}"
+    )
 
 
 @pytest.mark.vcr(filter_headers=["authorization"])
@@ -626,9 +626,9 @@ def test_agent_repeated_tool_usage_check_even_with_disabled_cache(capsys):
         "I tried reusing the same input, I must stop using this action input"
     )
 
-    assert (
-        expected_message in output
-    ), f"Expected message not found in output. Output was: {output}"
+    assert expected_message in output, (
+        f"Expected message not found in output. Output was: {output}"
+    )
 
 
 @pytest.mark.vcr(filter_headers=["authorization"])

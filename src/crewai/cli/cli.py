@@ -138,8 +138,12 @@ def log_tasks_outputs() -> None:
 @click.option("-s", "--short", is_flag=True, help="Reset SHORT TERM memory")
 @click.option("-e", "--entities", is_flag=True, help="Reset ENTITIES memory")
 @click.option("-kn", "--knowledge", is_flag=True, help="Reset KNOWLEDGE storage")
-@click.option("-akn", "--agent-knowledge", is_flag=True, help="Reset AGENT KNOWLEDGE storage")
-@click.option("-k","--kickoff-outputs",is_flag=True,help="Reset LATEST KICKOFF TASK OUTPUTS")
+@click.option(
+    "-akn", "--agent-knowledge", is_flag=True, help="Reset AGENT KNOWLEDGE storage"
+)
+@click.option(
+    "-k", "--kickoff-outputs", is_flag=True, help="Reset LATEST KICKOFF TASK OUTPUTS"
+)
 @click.option("-a", "--all", is_flag=True, help="Reset ALL memories")
 def reset_memories(
     long: bool,
@@ -154,13 +158,23 @@ def reset_memories(
     Reset the crew memories (long, short, entity, latest_crew_kickoff_ouputs, knowledge, agent_knowledge). This will delete all the data saved.
     """
     try:
-        memory_types = [long, short, entities, knowledge, agent_knowledge, kickoff_outputs, all]
+        memory_types = [
+            long,
+            short,
+            entities,
+            knowledge,
+            agent_knowledge,
+            kickoff_outputs,
+            all,
+        ]
         if not any(memory_types):
             click.echo(
                 "Please specify at least one memory type to reset using the appropriate flags."
             )
             return
-        reset_memories_command(long, short, entities, knowledge, agent_knowledge, kickoff_outputs, all)
+        reset_memories_command(
+            long, short, entities, knowledge, agent_knowledge, kickoff_outputs, all
+        )
     except Exception as e:
         click.echo(f"An error occurred while resetting memories: {e}", err=True)
 
@@ -348,7 +362,7 @@ def chat():
     and using the Chat LLM to generate responses.
     """
     click.secho(
-        "\nStarting a conversation with the Crew\n" "Type 'exit' or Ctrl+C to quit.\n",
+        "\nStarting a conversation with the Crew\nType 'exit' or Ctrl+C to quit.\n",
     )
 
     run_chat()
