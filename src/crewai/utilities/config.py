@@ -16,6 +16,10 @@ def process_config(
     Returns:
         Dict[str, Any]: The updated values dictionary.
     """
+    # Handle case where values is not a dict (e.g., during field validation errors)
+    if not isinstance(values, dict):
+        return values
+
     config = values.get("config", {})
     if not config:
         return values
