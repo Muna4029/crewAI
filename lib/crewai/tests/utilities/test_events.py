@@ -33,6 +33,7 @@ from crewai.events.types.llm_events import (
     LLMCallFailedEvent,
     LLMCallStartedEvent,
     LLMStreamChunkEvent,
+    LLMStreamChunkEvent,
 )
 from crewai.events.types.task_events import (
     TaskCompletedEvent,
@@ -835,8 +836,8 @@ def test_streaming_fallback_to_non_streaming():
     def mock_call(messages, tools=None, callbacks=None, available_functions=None):
         nonlocal fallback_called
         # Emit a couple of chunks to simulate partial streaming
-        crewai_event_bus.emit(llm, event=LLMStreamChunkEvent(chunk="Test chunk 1"))
-        crewai_event_bus.emit(llm, event=LLMStreamChunkEvent(chunk="Test chunk 2"))
+        crewai_event_bus.emit(llm, event=LLMStreamChunkEvent(chunk="Test chunk 1", response_id="some_response_id"))
+        crewai_event_bus.emit(llm, event=LLMStreamChunkEvent(chunk="Test chunk 2", response_id="some_response_id"))
 
         # Mark that fallback would be called
         fallback_called = True
@@ -892,7 +893,7 @@ def test_streaming_empty_response_handling():
     def mock_call(messages, tools=None, callbacks=None, available_functions=None):
         # Emit a few empty chunks
         for _ in range(3):
-            crewai_event_bus.emit(llm, event=LLMStreamChunkEvent(chunk="",response_id="id"))
+            crewai_event_bus.emit(llm, event=LLMStreamChunkEvent(chunk="", response_id="some_response_id"))
 
         # Return the default message for empty responses
         return "I apologize, but I couldn't generate a proper response. Please try again or rephrase your request."
@@ -936,6 +937,8 @@ def test_stream_llm_emits_event_with_task_and_agent_info():
 
     @crewai_event_bus.on(LLMCallCompletedEvent)
     def handle_llm_completed(source, event):
+        if not hasattr(event, 'response_id'):
+            return
         completed_event.append(event)
         if len(started_event) >= 1 and len(stream_event) >= 12:
             event_received.set()
@@ -1061,6 +1064,8 @@ def test_llm_emits_event_with_lite_agent():
 
     @crewai_event_bus.on(LLMCallCompletedEvent)
     def handle_llm_completed(source, event):
+        if not hasattr(event, 'response_id'):
+            return
         completed_event.append(event)
         if len(started_event) >= 1 and len(stream_event) >= 15:
             all_events_received.set()
