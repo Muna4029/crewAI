@@ -1,7 +1,18 @@
 import shutil
 import subprocess
 import time
-from typing import Any, Callable, Dict, List, Literal, Optional, Sequence, Tuple, Type, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    Literal,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    Union,
+)
 
 from pydantic import Field, InstanceOf, PrivateAttr, model_validator
 
@@ -33,10 +44,6 @@ from crewai.utilities.events.agent_events import (
     AgentExecutionStartedEvent,
 )
 from crewai.utilities.events.crewai_event_bus import crewai_event_bus
-from crewai.utilities.events.memory_events import (
-    MemoryRetrievalStartedEvent,
-    MemoryRetrievalCompletedEvent,
-)
 from crewai.utilities.events.knowledge_events import (
     KnowledgeQueryCompletedEvent,
     KnowledgeQueryFailedEvent,
@@ -44,6 +51,10 @@ from crewai.utilities.events.knowledge_events import (
     KnowledgeRetrievalCompletedEvent,
     KnowledgeRetrievalStartedEvent,
     KnowledgeSearchQueryFailedEvent,
+)
+from crewai.utilities.events.memory_events import (
+    MemoryRetrievalCompletedEvent,
+    MemoryRetrievalStartedEvent,
 )
 from crewai.utilities.llm_utils import create_llm
 from crewai.utilities.token_counter_callback import TokenCalcHandler
@@ -80,8 +91,8 @@ class Agent(BaseAgent):
         default=None,
         description="Maximum execution time for an agent to execute a task",
     )
-    agent_ops_agent_name: str = None  # type: ignore # Incompatible types in assignment (expression has type "None", variable has type "str")
-    agent_ops_agent_id: str = None  # type: ignore # Incompatible types in assignment (expression has type "None", variable has type "str")
+    agent_ops_agent_name: Optional[str] = None  # type: ignore
+    agent_ops_agent_id: Optional[str] = None  # type: ignore
     step_callback: Optional[Any] = Field(
         default=None,
         description="Callback to be executed after each step of the agent execution.",
@@ -162,7 +173,7 @@ class Agent(BaseAgent):
     )
     guardrail: Optional[Union[Callable[[Any], Tuple[bool, Any]], str]] = Field(
         default=None,
-        description="Function or string description of a guardrail to validate agent output"
+        description="Function or string description of a guardrail to validate agent output",
     )
     guardrail_max_retries: int = Field(
         default=3, description="Maximum number of retries when guardrail fails"
@@ -279,7 +290,7 @@ class Agent(BaseAgent):
         self._inject_date_to_task(task)
 
         if self.tools_handler:
-            self.tools_handler.last_used_tool = {}  # type: ignore # Incompatible types in assignment (expression has type "dict[Never, Never]", variable has type "ToolCalling")
+            self.tools_handler.last_used_tool: ToolCalling = {}  # type: ignore
 
         task_prompt = task.prompt()
 
@@ -476,7 +487,7 @@ class Agent(BaseAgent):
         # If there was any tool in self.tools_results that had result_as_answer
         # set to True, return the results of the last tool that had
         # result_as_answer set to True
-        for tool_result in self.tools_results:  # type: ignore # Item "None" of "list[Any] | None" has no attribute "__iter__" (not iterable)
+        for tool_result in self.tools_results or []:  # type: ignore
             if tool_result.get("result_as_answer", False):
                 result = tool_result["result"]
         crewai_event_bus.emit(
@@ -538,8 +549,8 @@ class Agent(BaseAgent):
         )["output"]
 
     def create_agent_executor(
-        self, tools: Optional[List[BaseTool]] = None, task=None
-    ) -> None:
+        self, tools: Optional[List[BaseTool]] = None, task: Optional[Any] = None
+    ) -> CrewAgentExecutor:
         """Create an agent executor for the agent.
 
         Returns:
@@ -597,7 +608,7 @@ class Agent(BaseAgent):
 
         return [AddImageTool()]
 
-    def get_code_execution_tools(self):
+    def get_code_execution_tools(self) -> List[CodeInterpreterTool]:
         try:
             from crewai_tools import CodeInterpreterTool  # type: ignore
 
@@ -609,7 +620,9 @@ class Agent(BaseAgent):
                 "info", "Coding tools not available. Install crewai_tools. "
             )
 
-    def get_output_converter(self, llm, text, model, instructions):
+    def get_output_converter(
+        self, llm: Any, text: str, model: Any, instructions: str
+    ) -> Converter:
         return Converter(llm=llm, text=text, model=model, instructions=instructions)
 
     def _training_handler(self, task_prompt: str) -> str:
@@ -657,7 +670,7 @@ class Agent(BaseAgent):
 
         return description
 
-    def _inject_date_to_task(self, task):
+    def _inject_date_to_task(self, task: Any):
         """Inject the current date into the task description if inject_date is enabled."""
         if self.inject_date:
             from datetime import datetime
@@ -723,7 +736,7 @@ class Agent(BaseAgent):
     def set_fingerprint(self, fingerprint: Fingerprint):
         self.security_config.fingerprint = fingerprint
 
-    def _get_knowledge_search_query(self, task_prompt: str) -> str | None:
+    def _get_knowledge_search_query(self, task_prompt: str) -> Optional[str]:
         """Generate a search query for the knowledge base based on the task description."""
         crewai_event_bus.emit(
             self,
