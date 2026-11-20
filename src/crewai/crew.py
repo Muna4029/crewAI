@@ -1261,7 +1261,7 @@ class Crew(FlowTrackable, BaseModel):
         return copied_crew
 
     def _set_tasks_callbacks(self) -> None:
-        """Sets callback for every task suing task_callback"""
+        """Sets callback for every task using task_callback"""
         for task in self.tasks:
             if not task.callback:
                 task.callback = self.task_callback
