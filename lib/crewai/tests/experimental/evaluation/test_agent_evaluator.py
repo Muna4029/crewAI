@@ -91,7 +91,8 @@ class TestAgentEvaluator:
         assert agent.role in results
         assert len(results[agent.role]) == 1
 
-        (result,) = results[agent.role]
+        result = results.get(agent.role)
+        assert result is not None, f"Missing evaluation result for role: {agent.role}"
         assert isinstance(result, AgentEvaluationResult)
 
         assert result.agent_id == str(agent.id)
