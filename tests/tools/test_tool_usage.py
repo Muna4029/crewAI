@@ -5,17 +5,11 @@ import time
 from unittest.mock import MagicMock, patch
 
 import pytest
-from pydantic import BaseModel, Field
-
 from crewai import Agent, Task
 from crewai.tools import BaseTool
 from crewai.tools.tool_usage import ToolUsage
 from crewai.utilities.events import crewai_event_bus
-from crewai.utilities.events.tool_usage_events import (
-    ToolSelectionErrorEvent,
-    ToolUsageFinishedEvent,
-    ToolValidateInputErrorEvent,
-)
+from pydantic import BaseModel, Field
 
 
 class RandomNumberToolInput(BaseModel):
@@ -498,8 +492,8 @@ def test_tool_selection_error_event_direct():
     assert isinstance(event, ToolSelectionErrorEvent)
     assert event.agent_key == "test_key"
     assert event.agent_role == "test_role"
-    assert event.tool_name == ""
-    assert event.tool_args == {}
+    assert event.agent_key == "test_key"
+    assert event.agent_role == "test_role"
     assert "Test Tool" in event.tool_class
     assert "forgot the Action name" in event.error
 

@@ -1,11 +1,8 @@
 import json
-import os
 from typing import Dict, List, Optional
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
-from pydantic import BaseModel
-
 from crewai.llm import LLM
 from crewai.utilities.converter import (
     Converter,
@@ -19,6 +16,7 @@ from crewai.utilities.converter import (
     validate_model,
 )
 from crewai.utilities.pydantic_schema_parser import PydanticSchemaParser
+from pydantic import BaseModel
 
 
 @pytest.fixture(scope="module")
