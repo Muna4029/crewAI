@@ -19,6 +19,7 @@ class FlowTrackable(BaseModel):
         description="The parent flow of the instance, if it was created inside a flow.",
     )
 
+    @classmethod
     @model_validator(mode="after")
     def _set_parent_flow(self) -> "FlowTrackable":
         max_depth = 5

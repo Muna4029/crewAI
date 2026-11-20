@@ -1,10 +1,7 @@
 from collections import defaultdict
 from typing import cast
-from unittest.mock import Mock
 
 import pytest
-from pydantic import BaseModel, Field
-
 from crewai import LLM, Agent
 from crewai.flow import Flow, start
 from crewai.lite_agent import LiteAgent, LiteAgentOutput
@@ -12,6 +9,7 @@ from crewai.tools import BaseTool
 from crewai.utilities.events import crewai_event_bus
 from crewai.utilities.events.agent_events import LiteAgentExecutionStartedEvent
 from crewai.utilities.events.tool_usage_events import ToolUsageStartedEvent
+from pydantic import BaseModel, Field
 
 
 # A simple test tool
@@ -58,12 +56,12 @@ class CalculatorTool(BaseTool):
 
 
 # Define a custom response format using Pydantic
-class ResearchResult(BaseModel):
+class ResearchResult:
     """Structure for research results."""
 
-    main_findings: str = Field(description="The main findings from the research")
-    key_points: list[str] = Field(description="List of key points")
-    sources: list[str] = Field(description="List of sources used")
+    main_findings: str
+    key_points: list[str]
+    sources: list[str]
 
 
 @pytest.mark.vcr(filter_headers=["authorization"])
@@ -263,19 +261,14 @@ async def test_lite_agent_returns_usage_metrics_async():
 class TestFlow(Flow):
     """A test flow that creates and runs an agent."""
 
-    def __init__(self, llm, tools):
-        self.llm = llm
-        self.tools = tools
-        super().__init__()
-
     @start()
-    def start(self):
+    def start(self, llm, tools):
         agent = Agent(
             role="Test Agent",
             goal="Test Goal",
             backstory="Test Backstory",
-            llm=self.llm,
-            tools=self.tools,
+            llm=llm,
+            tools=tools,
         )
         return agent.kickoff("Test query")
 
@@ -287,10 +280,9 @@ def verify_agent_parent_flow(result, agent, flow):
     assert agent.parent_flow is flow
 
 
-def test_sets_parent_flow_when_inside_flow():
+def test_sets_parent_flow_when_inside_flow(mock_llm):
     captured_agent = None
 
-    mock_llm = Mock(spec=LLM)
     mock_llm.call.return_value = "Test response"
 
     class MyFlow(Flow):
@@ -316,11 +308,17 @@ def test_sets_parent_flow_when_inside_flow():
         flow.kickoff()
         assert captured_agent.parent_flow is flow
 
+
 @pytest.mark.vcr(filter_headers=["authorization"])
-def test_guardrail_is_called_using_string():
+def test_guardrail_is_called_using_string(mock_llm):
     guardrail_events = defaultdict(list)
-    from crewai.utilities.events import LLMGuardrailCompletedEvent, LLMGuardrailStartedEvent
+    from crewai.utilities.events import (
+        LLMGuardrailCompletedEvent,
+        LLMGuardrailStartedEvent,
+    )
+
     with crewai_event_bus.scoped_handlers():
+
         @crewai_event_bus.on(LLMGuardrailStartedEvent)
         def capture_guardrail_started(source, event):
             guardrail_events["started"].append(event)
@@ -338,17 +336,26 @@ def test_guardrail_is_called_using_string():
 
         result = agent.kickoff(messages="Top 10 best players in the world?")
 
-        assert len(guardrail_events['started']) == 2
-        assert len(guardrail_events['completed']) == 2
-        assert not guardrail_events['completed'][0].success
-        assert guardrail_events['completed'][1].success
-        assert "Here are the top 10 best soccer players in the world, focusing exclusively on Brazilian players" in result.raw
+        assert len(guardrail_events["started"]) == 2
+        assert len(guardrail_events["completed"]) == 2
+        assert not guardrail_events["completed"][0].success
+        assert guardrail_events["completed"][1].success
+        assert (
+            "Here are the top 10 best soccer players in the world, focusing exclusively on Brazilian players"
+            in result.raw
+        )
+
 
 @pytest.mark.vcr(filter_headers=["authorization"])
-def test_guardrail_is_called_using_callable():
+def test_guardrail_is_called_using_callable(mock_llm):
     guardrail_events = defaultdict(list)
-    from crewai.utilities.events import LLMGuardrailCompletedEvent, LLMGuardrailStartedEvent
+    from crewai.utilities.events import (
+        LLMGuardrailCompletedEvent,
+        LLMGuardrailStartedEvent,
+    )
+
     with crewai_event_bus.scoped_handlers():
+
         @crewai_event_bus.on(LLMGuardrailStartedEvent)
         def capture_guardrail_started(source, event):
             guardrail_events["started"].append(event)
@@ -366,16 +373,22 @@ def test_guardrail_is_called_using_callable():
 
         result = agent.kickoff(messages="Top 1 best players in the world?")
 
-        assert len(guardrail_events['started']) == 1
-        assert len(guardrail_events['completed']) == 1
-        assert guardrail_events['completed'][0].success
+        assert len(guardrail_events["started"]) == 1
+        assert len(guardrail_events["completed"]) == 1
+        assert guardrail_events["completed"][0].success
         assert "Pelé - Santos, 1958" in result.raw
 
+
 @pytest.mark.vcr(filter_headers=["authorization"])
-def test_guardrail_reached_attempt_limit():
+def test_guardrail_reached_attempt_limit(mock_llm):
     guardrail_events = defaultdict(list)
-    from crewai.utilities.events import LLMGuardrailCompletedEvent, LLMGuardrailStartedEvent
+    from crewai.utilities.events import (
+        LLMGuardrailCompletedEvent,
+        LLMGuardrailStartedEvent,
+    )
+
     with crewai_event_bus.scoped_handlers():
+
         @crewai_event_bus.on(LLMGuardrailStartedEvent)
         def capture_guardrail_started(source, event):
             guardrail_events["started"].append(event)
@@ -388,23 +401,28 @@ def test_guardrail_reached_attempt_limit():
             role="Sports Analyst",
             goal="Gather information about the best soccer players",
             backstory="""You are an expert at gathering and organizing information. You carefully collect details and present them in a structured way.""",
-            guardrail=lambda output: (False, "You are not allowed to include Brazilian players"),
+            guardrail=lambda output: (
+                False,
+                "You are not allowed to include Brazilian players",
+            ),
             guardrail_max_retries=2,
         )
 
-        with pytest.raises(Exception, match="Agent's guardrail failed validation after 2 retries"):
+        with pytest.raises(
+            Exception, match="Agent's guardrail failed validation after 2 retries"
+        ):
             agent.kickoff(messages="Top 10 best players in the world?")
 
-        assert len(guardrail_events['started']) == 3 # 2 retries + 1 initial call
-        assert len(guardrail_events['completed']) == 3 # 2 retries + 1 initial call
-        assert not guardrail_events['completed'][0].success
-        assert not guardrail_events['completed'][1].success
-        assert not guardrail_events['completed'][2].success
+        assert len(guardrail_events["started"]) == 3  # 2 retries + 1 initial call
+        assert len(guardrail_events["completed"]) == 3  # 2 retries + 1 initial call
+        assert not guardrail_events["completed"][0].success
+        assert not guardrail_events["completed"][1].success
+        assert not guardrail_events["completed"][2].success
 
 
 @pytest.mark.vcr(filter_headers=["authorization"])
-def test_agent_output_when_guardrail_returns_base_model():
-    class Player(BaseModel):
+def test_agent_output_when_guardrail_returns_base_model(mock_llm):
+    class Player:
         name: str
         country: str
 
@@ -412,7 +430,10 @@ def test_agent_output_when_guardrail_returns_base_model():
         role="Sports Analyst",
         goal="Gather information about the best soccer players",
         backstory="""You are an expert at gathering and organizing information. You carefully collect details and present them in a structured way.""",
-        guardrail=lambda output: (True, Player(name="Lionel Messi", country="Argentina")),
+        guardrail=lambda output: (
+            True,
+            Player(name="Lionel Messi", country="Argentina"),
+        ),
     )
 
     result = agent.kickoff(messages="Top 10 best players in the world?")
