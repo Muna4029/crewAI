@@ -74,7 +74,9 @@ The output should be raw JSON that exactly matches the specified schema.
                         # Validate it's proper JSON
                         json.loads(extracted)
                         return extracted
-                    except:
+                    except Exception as e:
+            # Handle the exception or log it
+            print(f'An error occurred: {e}')
                         pass
 
         return result

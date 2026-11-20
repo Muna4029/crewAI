@@ -33,7 +33,7 @@ from .flow_events import (
     MethodExecutionFinishedEvent,
     MethodExecutionFailedEvent,
 )
-from .crewai_event_bus import CrewAIEventsBus, crewai_event_bus
+from .crewai_event_bus import CrewAIEventsBus
 from .tool_usage_events import (
     ToolUsageFinishedEvent,
     ToolUsageErrorEvent,
