@@ -1,7 +1,6 @@
 import json
 
 from crewai.agents.agent_adapters.base_converter_adapter import BaseConverterAdapter
-from crewai.utilities.converter import generate_model_description
 
 
 class LangGraphConverterAdapter(BaseConverterAdapter):
@@ -75,6 +74,6 @@ The output should be raw JSON that exactly matches the specified schema.
                         json.loads(extracted)
                         return extracted
                     except:
-                        pass
+                        # pass
 
         return result

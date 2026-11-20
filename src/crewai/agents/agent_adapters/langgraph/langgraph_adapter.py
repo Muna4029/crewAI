@@ -1,4 +1,4 @@
-from typing import Any, AsyncIterable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import Field, PrivateAttr
 
@@ -106,7 +106,7 @@ class LangGraphAgentAdapter(BaseAgentAdapter):
             raise
         except Exception as e:
             self._logger.log("error", f"Error setting up LangGraph agent: {str(e)}")
-            raise
+            raise e
 
     def _build_system_prompt(self) -> str:
         """Build a system prompt for the LangGraph agent."""
