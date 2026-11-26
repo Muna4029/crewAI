@@ -1,28 +1,81 @@
 from importlib.metadata import version as get_version
-from typing import Optional
+import importlib
 
 import click
 
-from crewai.cli.add_crew_to_flow import add_crew_to_flow
-from crewai.cli.create_crew import create_crew
-from crewai.cli.create_flow import create_flow
-from crewai.cli.crew_chat import run_chat
-from crewai.memory.storage.kickoff_task_outputs_storage import (
-    KickoffTaskOutputsSQLiteStorage,
+# Lazily import internal submodules to avoid triggering eager imports that
+# may fail at import time (for example, modules under crewai.tools).
+# These LazyLoader objects will import the real object on first use and
+# replace themselves in globals(), preventing import-time failures.
+
+
+class _LazyLoader:
+    def __init__(self, module_path: str, attr_name: str, global_name: str):
+        self._module_path = module_path
+        self._attr_name = attr_name
+        self._global_name = global_name
+        self._loaded = False
+        self._obj = None
+
+    def _load(self):
+        if not self._loaded:
+            module = importlib.import_module(self._module_path)
+            obj = getattr(module, self._attr_name)
+            globals()[self._global_name] = obj
+            self._obj = obj
+            self._loaded = True
+        return self._obj
+
+    def __call__(self, *args, **kwargs):
+        obj = self._load()
+        return obj(*args, **kwargs)
+
+    def __getattr__(self, item):
+        obj = self._load()
+        return getattr(obj, item)
+
+    def __repr__(self):
+        if self._loaded:
+            return repr(self._obj)
+        return f"<LazyLoader {self._module_path}.{self._attr_name}>"
+
+
+# Lazy proxies for CLI subcommands and classes. These match the original
+# import targets but defer importing the underlying modules until needed.
+add_crew_to_flow = _LazyLoader(
+    "crewai.cli.add_crew_to_flow", "add_crew_to_flow", "add_crew_to_flow"
+)
+create_crew = _LazyLoader("crewai.cli.create_crew", "create_crew", "create_crew")
+create_flow = _LazyLoader("crewai.cli.create_flow", "create_flow", "create_flow")
+run_chat = _LazyLoader("crewai.cli.crew_chat", "run_chat", "run_chat")
+KickoffTaskOutputsSQLiteStorage = _LazyLoader(
+    "crewai.memory.storage.kickoff_task_outputs_storage",
+    "KickoffTaskOutputsSQLiteStorage",
+    "KickoffTaskOutputsSQLiteStorage",
 )
 
-from .authentication.main import AuthenticationCommand
-from .deploy.main import DeployCommand
-from .evaluate_crew import evaluate_crew
-from .install_crew import install_crew
-from .kickoff_flow import kickoff_flow
-from .plot_flow import plot_flow
-from .replay_from_task import replay_task_command
-from .reset_memories_command import reset_memories_command
-from .run_crew import run_crew
-from .tools.main import ToolCommand
-from .train_crew import train_crew
-from .update_crew import update_crew
+AuthenticationCommand = _LazyLoader(
+    "crewai.cli.authentication.main", "AuthenticationCommand", "AuthenticationCommand"
+)
+DeployCommand = _LazyLoader("crewai.cli.deploy.main", "DeployCommand", "DeployCommand")
+evaluate_crew = _LazyLoader(
+    "crewai.cli.evaluate_crew", "evaluate_crew", "evaluate_crew"
+)
+install_crew = _LazyLoader("crewai.cli.install_crew", "install_crew", "install_crew")
+kickoff_flow = _LazyLoader("crewai.cli.kickoff_flow", "kickoff_flow", "kickoff_flow")
+plot_flow = _LazyLoader("crewai.cli.plot_flow", "plot_flow", "plot_flow")
+replay_task_command = _LazyLoader(
+    "crewai.cli.replay_from_task", "replay_task_command", "replay_task_command"
+)
+reset_memories_command = _LazyLoader(
+    "crewai.cli.reset_memories_command",
+    "reset_memories_command",
+    "reset_memories_command",
+)
+run_crew = _LazyLoader("crewai.cli.run_crew", "run_crew", "run_crew")
+ToolCommand = _LazyLoader("crewai.cli.tools.main", "ToolCommand", "ToolCommand")
+train_crew = _LazyLoader("crewai.cli.train_crew", "train_crew", "train_crew")
+update_crew = _LazyLoader("crewai.cli.update_crew", "update_crew", "update_crew")
 
 
 @click.group()
@@ -137,8 +190,12 @@ def log_tasks_outputs() -> None:
 @click.option("-s", "--short", is_flag=True, help="Reset SHORT TERM memory")
 @click.option("-e", "--entities", is_flag=True, help="Reset ENTITIES memory")
 @click.option("-kn", "--knowledge", is_flag=True, help="Reset KNOWLEDGE storage")
-@click.option("-akn", "--agent-knowledge", is_flag=True, help="Reset AGENT KNOWLEDGE storage")
-@click.option("-k","--kickoff-outputs",is_flag=True,help="Reset LATEST KICKOFF TASK OUTPUTS")
+@click.option(
+    "-akn", "--agent-knowledge", is_flag=True, help="Reset AGENT KNOWLEDGE storage"
+)
+@click.option(
+    "-k", "--kickoff-outputs", is_flag=True, help="Reset LATEST KICKOFF TASK OUTPUTS"
+)
 @click.option("-a", "--all", is_flag=True, help="Reset ALL memories")
 def reset_memories(
     long: bool,
@@ -153,13 +210,23 @@ def reset_memories(
     Reset the crew memories (long, short, entity, latest_crew_kickoff_ouputs, knowledge, agent_knowledge). This will delete all the data saved.
     """
     try:
-        memory_types = [long, short, entities, knowledge, agent_knowledge, kickoff_outputs, all]
+        memory_types = [
+            long,
+            short,
+            entities,
+            knowledge,
+            agent_knowledge,
+            kickoff_outputs,
+            all,
+        ]
         if not any(memory_types):
             click.echo(
                 "Please specify at least one memory type to reset using the appropriate flags."
             )
             return
-        reset_memories_command(long, short, entities, knowledge, agent_knowledge, kickoff_outputs, all)
+        reset_memories_command(
+            long, short, entities, knowledge, agent_knowledge, kickoff_outputs, all
+        )
     except Exception as e:
         click.echo(f"An error occurred while resetting memories: {e}", err=True)
 

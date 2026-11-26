@@ -5,15 +5,17 @@ import sys
 from functools import reduce
 from inspect import getmro, isclass, isfunction, ismethod
 from pathlib import Path
-from typing import Any, Dict, List, get_type_hints
+from typing import Any, Dict, List, get_type_hints, TYPE_CHECKING
 
 import click
 import tomli
 from rich.console import Console
 
 from crewai.cli.constants import ENV_VARS
-from crewai.crew import Crew
-from crewai.flow import Flow
+
+if TYPE_CHECKING:
+    from crewai.crew import Crew
+    from crewai.flow import Flow
 
 if sys.version_info >= (3, 11):
     import tomllib
