@@ -1642,15 +1642,17 @@ def test_handle_context_length_exceeds_limit_cli_no():
             description="The final answer is 42. But don't give it yet, instead keep using the `get_final_answer` tool.",
             expected_output="The final answer",
         )
-        agent.execute_task(
-            task=task,
-        )
-        private_mock.assert_called_once()
-        pytest.raises(SystemExit)
+        # Patch handle_context_length before executing so we can observe whether it is called
         with patch(
             "crewai.utilities.agent_utils.handle_context_length"
         ) as mock_handle_context:
-            mock_handle_context.assert_not_called()
+            # Use pytest.raises as a context manager to assert SystemExit is raised
+            with pytest.raises(SystemExit):
+                agent.execute_task(
+                    task=task,
+                )
+        private_mock.assert_called_once()
+        mock_handle_context.assert_not_called()
 
 
 def test_agent_with_all_llm_attributes():

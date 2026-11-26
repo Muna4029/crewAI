@@ -214,8 +214,6 @@ def test_lite_agent_structured_output():
 
     assert result.usage_metrics is not None
 
-    return result
-
 
 @pytest.mark.vcr(filter_headers=["authorization"])
 def test_lite_agent_returns_usage_metrics():
