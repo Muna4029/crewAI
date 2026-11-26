@@ -2,7 +2,6 @@ import datetime
 import inspect
 import json
 import logging
-import re
 import threading
 import uuid
 from concurrent.futures import Future
@@ -197,7 +196,6 @@ class Task(BaseModel):
             # Check return annotation if present, but don't require it
             return_annotation = sig.return_annotation
             if return_annotation != inspect.Signature.empty:
-
                 return_annotation_args = get_args(return_annotation)
                 if not (
                     get_origin(return_annotation) is tuple
