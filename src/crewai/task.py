@@ -5,7 +5,6 @@ import logging
 import threading
 import uuid
 from concurrent.futures import Future
-from copy import copy
 from hashlib import md5
 from pathlib import Path
 from typing import (
@@ -201,7 +200,6 @@ class Task(BaseModel):
             # Check return annotation if present, but don't require it
             return_annotation = sig.return_annotation
             if return_annotation != inspect.Signature.empty:
-
                 return_annotation_args = get_args(return_annotation)
                 if not (
                     get_origin(return_annotation) is tuple
@@ -527,10 +525,10 @@ class Task(BaseModel):
 
     def prompt(self) -> str:
         """Generates the task prompt with optional markdown formatting.
-        
+
         When the markdown attribute is True, instructions for formatting the
         response in Markdown syntax will be added to the prompt.
-        
+
         Returns:
             str: The formatted prompt string containing the task description,
                  expected output, and optional markdown formatting instructions.
@@ -541,7 +539,7 @@ class Task(BaseModel):
             expected_output=self.expected_output
         )
         tasks_slices = [self.description, output]
-        
+
         if self.markdown:
             markdown_instruction = """Your final answer MUST be formatted in Markdown syntax.
 Follow these guidelines:
@@ -670,7 +668,10 @@ Follow these guidelines:
             return next((agent for agent in agents if agent.role == role), None)
 
         cloned_agent = get_agent_by_role(self.agent.role) if self.agent else None
-        cloned_tools = copy(self.tools) if self.tools else []
+        # Use a qualified deepcopy to avoid shadowing the method name `copy`.
+        from copy import deepcopy as _deepcopy
+
+        cloned_tools = _deepcopy(self.tools) if self.tools else []
 
         copied_task = self.__class__(
             **copied_data,
