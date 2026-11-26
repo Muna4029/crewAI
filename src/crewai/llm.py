@@ -518,19 +518,28 @@ class LLM(BaseLLM):
         """Poll batch job status until completion."""
         if not GOOGLE_GENAI_AVAILABLE:
             raise ImportError("google-generativeai is required for batch mode")
-        
+
         genai.configure(api_key=self.api_key)
-        
+
         start_time = time.time()
-        while time.time() - start_time < self.batch_timeout:
+        # Allow batch_timeout to be optional. If None, poll indefinitely.
+        timeout: Optional[float]
+        if self.batch_timeout is None:
+            timeout = None
+        else:
+            timeout = float(self.batch_timeout)
+
+        while timeout is None or time.time() - start_time < timeout:
             batch_job = genai.get_batch_job(job_name)
-            
+
             if batch_job.state in ["JOB_STATE_SUCCEEDED", "JOB_STATE_FAILED", "JOB_STATE_CANCELLED"]:
                 return batch_job
-            
+
             time.sleep(5)
-        
-        raise TimeoutError(f"Batch job {job_name} did not complete within {self.batch_timeout} seconds")
+
+        raise TimeoutError(
+            f"Batch job {job_name} did not complete within {self.batch_timeout} seconds"
+        )
 
     def _retrieve_batch_results(self, job_name: str) -> List[str]:
         """Retrieve results from a completed batch job."""
@@ -823,10 +832,14 @@ class LLM(BaseLLM):
             if tool_call.function.name:
                 current_tool_accumulator.function.name = tool_call.function.name
 
+            # Ensure arguments is a string before concatenation
             if tool_call.function.arguments:
-                current_tool_accumulator.function.arguments += (
-                    tool_call.function.arguments
-                )
+                if current_tool_accumulator.function.arguments is None:
+                    current_tool_accumulator.function.arguments = tool_call.function.arguments
+                else:
+                    current_tool_accumulator.function.arguments += (
+                        tool_call.function.arguments
+                    )
             assert hasattr(crewai_event_bus, "emit")
             crewai_event_bus.emit(
                 self,
@@ -844,12 +857,16 @@ class LLM(BaseLLM):
                 and available_functions
             ):
                 try:
-                    json.loads(current_tool_accumulator.function.arguments)
+                    # current_tool_accumulator.function.arguments is checked above for truthiness,
+                    # but guard the json.loads call to satisfy type-checkers.
+                    args = current_tool_accumulator.function.arguments
+                    if isinstance(args, str):
+                        json.loads(args)
 
-                    return self._handle_tool_call(
-                        [current_tool_accumulator],
-                        available_functions,
-                    )
+                        return self._handle_tool_call(
+                            [current_tool_accumulator],
+                            available_functions,
+                        )
                 except json.JSONDecodeError:
                     continue
         return None
@@ -1274,7 +1291,7 @@ class LLM(BaseLLM):
             return messages
 
         # Handle Anthropic models
-        if not self.is_anthropic:
+        if not self._is_anthropic_model():
             return messages
 
         # Anthropic requires messages to start with 'user' role
@@ -1293,7 +1310,7 @@ class LLM(BaseLLM):
         """
         if "/" in self.model:
             return self.model.split("/")[0]
-        return None
+        return "openai"
 
     def _validate_call_params(self) -> None:
         """
