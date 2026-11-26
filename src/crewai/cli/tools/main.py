@@ -4,9 +4,21 @@ import subprocess
 import tempfile
 from pathlib import Path
 from typing import Any
+import sys
 
 import click
 from rich.console import Console
+
+# Ensure the top-level 'crewai' package is importable regardless of repository layout
+_this_file = Path(__file__).resolve()
+_root_candidate = None
+for ancestor in [_this_file] + list(_this_file.parents):
+    # look for a directory that contains the 'crewai' package directory
+    if (ancestor / "crewai").is_dir():
+        _root_candidate = ancestor
+        break
+if _root_candidate and str(_root_candidate) not in sys.path:
+    sys.path.insert(0, str(_root_candidate))
 
 from crewai.cli import git
 from crewai.cli.command import BaseCommand, PlusAPIMixin

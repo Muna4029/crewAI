@@ -3031,9 +3031,9 @@ def test_crew_train_error(researcher, writer):
 
     with pytest.raises(TypeError) as e:
         crew.train()  # type: ignore purposefully throwing err
-        assert "train() missing 1 required positional argument: 'n_iterations'" in str(
-            e
-        )
+    assert "train() missing 1 required positional argument: 'n_iterations'" in str(
+        e.value
+    )
 
 
 def test__setup_for_training(researcher, writer):
