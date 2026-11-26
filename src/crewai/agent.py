@@ -538,7 +538,7 @@ class Agent(BaseAgent):
         )["output"]
 
     def create_agent_executor(
-        self, tools: Optional[List[BaseTool]] = None, task=None
+        self, tools: Optional[List[BaseTool]] = None, task: Optional["Task"] = None
     ) -> None:
         """Create an agent executor for the agent.
 
@@ -587,7 +587,7 @@ class Agent(BaseAgent):
             callbacks=[TokenCalcHandler(self._token_process)],
         )
 
-    def get_delegation_tools(self, agents: List[BaseAgent]):
+    def get_delegation_tools(self, agents: List[BaseAgent]) -> List[BaseTool]:
         agent_tools = AgentTools(agents=agents)
         tools = agent_tools.tools()
         return tools
@@ -597,7 +597,7 @@ class Agent(BaseAgent):
 
         return [AddImageTool()]
 
-    def get_code_execution_tools(self):
+    def get_code_execution_tools(self) -> Optional[List[BaseTool]]:
         try:
             from crewai_tools import CodeInterpreterTool  # type: ignore
 
@@ -608,8 +608,9 @@ class Agent(BaseAgent):
             self._logger.log(
                 "info", "Coding tools not available. Install crewai_tools. "
             )
+            return None
 
-    def get_output_converter(self, llm, text, model, instructions):
+    def get_output_converter(self, llm: Any, text: str, model: str, instructions: Optional[str]) -> "Converter":
         return Converter(llm=llm, text=text, model=model, instructions=instructions)
 
     def _training_handler(self, task_prompt: str) -> str:
@@ -657,7 +658,7 @@ class Agent(BaseAgent):
 
         return description
 
-    def _inject_date_to_task(self, task):
+    def _inject_date_to_task(self, task: "Task") -> None:
         """Inject the current date into the task description if inject_date is enabled."""
         if self.inject_date:
             from datetime import datetime
@@ -707,7 +708,7 @@ class Agent(BaseAgent):
                 f"Docker is not running. Please start Docker to use code execution with agent: {self.role}"
             )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Agent(role={self.role}, goal={self.goal}, backstory={self.backstory})"
 
     @property
