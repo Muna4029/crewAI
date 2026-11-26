@@ -6,6 +6,8 @@ from crewai.events.event_bus import crewai_event_bus
 
 
 class TestEvent(BaseEvent):
+    # Prevent pytest from treating this as a test container (it inherits an __init__)
+    __test__ = False
     pass
 
 

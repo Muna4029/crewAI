@@ -300,14 +300,15 @@ def test_task_emits_failed_event_on_execution_error(base_agent, base_task):
         with pytest.raises(Exception):  # noqa: B017
             agent.execute_task(task=task)
 
-            assert event_received.wait(timeout=5), (
-                "Timeout waiting for task failed event"
-            )
-            assert len(received_events) == 1
-            assert received_sources[0] == task
-            assert received_events[0].error == error_message
-            assert isinstance(received_events[0].timestamp, datetime)
-            assert received_events[0].type == "task_failed"
+    # After the exception has been raised, verify the TaskFailedEvent was emitted
+    assert event_received.wait(timeout=5), (
+        "Timeout waiting for task failed event"
+    )
+    assert len(received_events) == 1
+    assert received_sources[0] == task
+    assert received_events[0].error == error_message
+    assert isinstance(received_events[0].timestamp, datetime)
+    assert received_events[0].type == "task_failed"
 
 
 @pytest.mark.vcr(filter_headers=["authorization"])
@@ -835,8 +836,8 @@ def test_streaming_fallback_to_non_streaming():
     def mock_call(messages, tools=None, callbacks=None, available_functions=None):
         nonlocal fallback_called
         # Emit a couple of chunks to simulate partial streaming
-        crewai_event_bus.emit(llm, event=LLMStreamChunkEvent(chunk="Test chunk 1"))
-        crewai_event_bus.emit(llm, event=LLMStreamChunkEvent(chunk="Test chunk 2"))
+        crewai_event_bus.emit(llm, event=LLMStreamChunkEvent(chunk="Test chunk 1", response_id="id"))
+        crewai_event_bus.emit(llm, event=LLMStreamChunkEvent(chunk="Test chunk 2", response_id="id"))
 
         # Mark that fallback would be called
         fallback_called = True
