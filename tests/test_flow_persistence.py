@@ -3,19 +3,18 @@
 import os
 from typing import Dict
 
-import pytest
-from pydantic import BaseModel
 
-from crewai.flow.flow import Flow, FlowState, listen, start
+from crewai.flow.flow import Flow, listen, start
 from crewai.flow.persistence import persist
 from crewai.flow.persistence.sqlite import SQLiteFlowPersistence
 
 
-class TestState(FlowState):
+class TestState:
     """Test state model with required id field."""
 
-    counter: int = 0
-    message: str = ""
+    def __init__(self, counter: int = 0, message: str = ""):
+        self.counter = counter
+        self.message = message
 
 
 def test_persist_decorator_saves_state(tmp_path, caplog):
